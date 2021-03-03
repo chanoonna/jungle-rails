@@ -2,6 +2,16 @@ class OrdersController < ApplicationController
 
   def show
     @order = Order.find(params[:id])
+    line_item = LineItem.where("order_id = #{@order.id}")
+    @total = line_item.sum(:total_price_cents)
+    product_list = line_item.map { |item| item.product_id }
+    
+    @order_list ||= Product.where(id: product_list).map do |product|
+      { 
+        product: product,
+        quantity: line_item.find_by("product_id = #{product.id}").quantity
+      }
+    end
   end
 
   def create
