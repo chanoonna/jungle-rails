@@ -4,15 +4,24 @@ Rails.application.routes.draw do
 
   resources :products, only: [:index, :show]
   resources :categories, only: [:show]
+  resources :about, only: [:index]
+  resources :orders, only: [:create, :show]
+
+  resource :users, only: [] do
+    get    :signup,  to: 'users#new'
+    post   :signup,  to: 'users#create'
+  end
   
   resource :cart, only: [:show] do
     post   :add_item
     post   :remove_item
   end
-  
-  resources :about, only: [:index]
-      
-  resources :orders, only: [:create, :show]
+
+  resource :sessions, only: [] do
+    get    :login,  to: 'sessions#new'
+    get    :logout, to: 'sessions#destroy'
+    post   :login,  to: 'sessions#create'
+  end
 
   namespace :admin do
     root to: 'dashboard#show'
